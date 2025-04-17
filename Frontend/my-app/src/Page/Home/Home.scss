@@ -1,0 +1,23 @@
+.model {
+  display: flex;
+  min-height: 700px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  div {
+    border-radius: 5px;
+  }
+  &__left {
+    padding: 5px;
+    border: 1px solid black;
+    width: 10%;
+  }
+  &__main {
+    width: 65%;
+  }
+  &__right {
+    padding: 5px;
+    border: 1px solid black;
+    width: 25%;
+  }
+}

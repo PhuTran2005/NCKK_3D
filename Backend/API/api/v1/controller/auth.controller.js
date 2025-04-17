@@ -10,6 +10,7 @@ module.exports.signUp = async (req,res) => {
    try {
     const account = new Account(req.body) ;
     await account.save() ;
+    res.json({message : "Sign Up Success"});
    }catch{
     res.json({message : "Error"});
    }}}

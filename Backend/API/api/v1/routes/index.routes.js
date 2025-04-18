@@ -8,6 +8,6 @@ module.exports = (app) => {
 
     app.use(version + "/model" , routesModel)  ;
     app.use(version + "/hotspot" , routesHotspot) ;
-    app.use(version + "assignment" ,routerAssignment) ;
+    app.use(version + "/assignment" ,routerAssignment) ;
     app.use("/auth"  , routesAuth) ;
 }

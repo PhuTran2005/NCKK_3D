@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./Model.scss";
-import { changeModel } from "../../Action/Model";
 import React from "react";
+import { changeModel } from "../../Features/Model/ModelSlice";
 export default function ModelAll(prop) {
   const { modelList } = prop;
-  const model = useSelector((state) => state.ModelReducer);
+  const { currModel } = useSelector((state) => state.model);
 
   const dispatch = useDispatch();
   return (
@@ -13,7 +13,7 @@ export default function ModelAll(prop) {
         <ul>
           {modelList.map((item, index) => (
             <li
-              className={model.name === item.name ? "active" : ""}
+              className={currModel.name === item.name ? "active" : ""}
               onClick={() => dispatch(changeModel(item))}
               key={index}
             >

@@ -7,7 +7,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 5px 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+
   &__logo {
     color: white;
     img {
@@ -23,14 +29,16 @@
       align-items: center;
       li {
         .active {
-          color: red;
+          color: #5271ff;
+          background-color: white;
         }
         a {
+          border-radius: 5px;
           color: white;
           font-size: 17px;
           font-weight: 400;
+          padding: 10px 15px;
         }
-        padding-right: 20px;
       }
     }
   }
@@ -48,10 +56,10 @@
   }
 }
 .main {
-  margin-top: 10px;
+  margin-top: 70px;
 }
 .footer {
-  padding: 10px;
+  padding: 5px;
   border: 2px solid #3533cc;
   border-radius: 5px;
   margin-top: 10px;

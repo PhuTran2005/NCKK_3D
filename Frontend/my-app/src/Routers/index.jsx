@@ -5,24 +5,50 @@ import Discovery from "../Page/Dicovery";
 import Colection from "../Page/Colection";
 import NotFound from "../Page/NotFound";
 import React from "react";
+import Model from "../Page/Model";
+import Login from "../Page/Login";
+import Register from "../Page/Register";
+import Assigment from "../Page/Asigment";
+import ProtectedRoute from "../Component/ProtectedRoute";
 
 const AllRouters = () => {
-  let routers = useRoutes([
+  const routers = useRoutes([
     {
       path: "/",
       element: <DefaultLayout />,
       children: [
         {
-          path: "/",
+          path: "",
           element: <Home />,
         },
         {
-          path: "dicovery",
-          element: <Discovery />,
+          path: "models",
+          element: <Model />,
+        },
+        {
+          path: "assigment",
+          element: (
+            <ProtectedRoute>
+              <Assigment />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "colection",
-          element: <Colection />,
+
+          element: (
+            <ProtectedRoute>
+              <Colection />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "login",
+          element: <Login />,
+        },
+        {
+          path: "register",
+          element: <Register />,
         },
         {
           path: "*",
@@ -31,6 +57,8 @@ const AllRouters = () => {
       ],
     },
   ]);
+
   return routers;
 };
+
 export default AllRouters;

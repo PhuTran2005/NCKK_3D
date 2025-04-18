@@ -1,15 +1,16 @@
-const API_DOMAIN = "https://api-nckh-1.onrender.com/api/v1/model";
+const API_DOMAIN = "https://version-web-3d-64-5.onrender.com/api/v1/model";
 
-const Request = async (url, method = "GET", body, options) => {
+const Request = async (url, method = "GET", body = null, options = {}) => {
   console.log(API_DOMAIN + url);
+
   try {
     const response = await fetch(API_DOMAIN + url, {
       method: method,
       headers: {
         "Content-Type": "application/json",
-        ...options.headers, // Giờ TypeScript sẽ hiểu headers
+        ...(options.headers || {}),
       },
-      body: body ? JSON.stringify(body) : null,
+      body: body && method !== "GET" ? JSON.stringify(body) : null,
     });
 
     if (!response.ok) {

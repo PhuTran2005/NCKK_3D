@@ -6,6 +6,7 @@ import { FaFacebookMessenger } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { FaInstagramSquare } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
+import { Button } from "antd";
 import React from "react";
 export default function DefaultLayout() {
   return (
@@ -18,19 +19,26 @@ export default function DefaultLayout() {
           <div className="header__nav">
             <ul>
               <li>
-                <NavLink to="/">Home</NavLink>
+                <NavLink to="/">Trang chủ</NavLink>
               </li>
               <li>
-                <NavLink to="/discovery">Discovery</NavLink>
+                <NavLink to="/models">Mô hình</NavLink>
               </li>
               <li>
-                <NavLink to="/colection">Colection</NavLink>
+                <NavLink to="/assigment">Luyện tập</NavLink>
+              </li>
+              <li>
+                <NavLink to="/colection">Bộ sưu tập</NavLink>
               </li>
             </ul>
-            <div className="header__search">
-              <AiOutlineSearch size={20} />
-              <input type="text" placeholder="Tìm kiếm" />
-            </div>
+          </div>
+          <div className="header_enter">
+            <NavLink to="/login">
+              <Button>Login</Button>
+            </NavLink>
+            <NavLink to="/register">
+              <Button>Register</Button>
+            </NavLink>
           </div>
         </header>
         <main className="main">

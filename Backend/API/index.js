@@ -11,8 +11,9 @@ const app = express() ;
 const port = process.env.PORT ;
 
 // call api by localhost .
-const cors = require("cors");
+const cors = require('cors');
 app.use(cors()); 
+app.use(express.json());
 // api routes v1
 const routesV1 = require("./api/v1/routes/index.routes") ;
 routesV1(app) ;

@@ -8,6 +8,8 @@ const modelSchema = new mongoose.Schema (
             type : Array,  
             default : [] , 
         } ,
+        thumbnail : String ,
+        description : String ,
         delete :  {
             type : Boolean ,
             default : false,

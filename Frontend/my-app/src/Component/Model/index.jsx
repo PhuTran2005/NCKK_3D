@@ -31,7 +31,7 @@ const ModelViewerComponent = () => {
 
   const hideTooltip = () => {
     setTooltipData((prev) => ({ ...prev, visible: false }));
-  };
+  }; 
 
   // Click outside để ẩn tooltip
   useEffect(() => {

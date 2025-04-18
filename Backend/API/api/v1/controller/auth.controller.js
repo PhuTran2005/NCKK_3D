@@ -3,7 +3,7 @@ const Account = require("../../../model/account.model");
 module.exports.login = async (req, res) => {
   const account = await Account.findOne({ loginName: req.body.loginName });
   if (account.password == req.body.password) {
-    res.json({code : 200 , message: "Login Success", token: req.body.token });
+    res.json({code : 200 , message: "Login Success", token: account.token });
   }
   else res.json({code : 400 , message : "Invalid Login Name or Password" });
 };

@@ -8,7 +8,14 @@ import { FaInstagramSquare } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
 import { Button } from "antd";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../Features/Auth/authSlice";
 export default function DefaultLayout() {
+  const dispatch = useDispatch();
+  const handelLogout = () => {
+    dispatch(logout());
+  };
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   return (
     <>
       <div className="wrap">
@@ -33,12 +40,20 @@ export default function DefaultLayout() {
             </ul>
           </div>
           <div className="header_enter">
-            <NavLink to="/login">
-              <Button>Login</Button>
-            </NavLink>
-            <NavLink to="/register">
-              <Button>Register</Button>
-            </NavLink>
+            {isAuthenticated ? (
+              <NavLink to="/login">
+                <Button onClick={handelLogout}>Logout</Button>
+              </NavLink>
+            ) : (
+              <>
+                <NavLink to="/login">
+                  <Button>Login</Button>
+                </NavLink>
+                <NavLink to="/register">
+                  <Button>Register</Button>
+                </NavLink>
+              </>
+            )}
           </div>
         </header>
         <main className="main">

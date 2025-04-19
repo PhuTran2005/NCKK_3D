@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../Features/Auth/authSlice";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const onFinish = async (values) => {
     setLoading(true);
-    // Giả sử kiểm tra thông tin người dùng
     try {
       const usename = values.username;
       const password = values.password;
@@ -31,6 +33,8 @@ const Login = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+    dispatch(loginSuccess(values));
+
     setLoading(false);
   };
 

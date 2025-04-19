@@ -57,6 +57,7 @@ model-viewer {
   transition: opacity 0.3s ease-in-out;
   height: 150px;
   width: 150px;
+  z-index: 50;
 }
 #tooltip-img {
   width: 100%;

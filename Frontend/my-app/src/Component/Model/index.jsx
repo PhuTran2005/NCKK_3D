@@ -3,6 +3,7 @@ import "@google/model-viewer";
 import "./Model.scss";
 import { useSelector } from "react-redux";
 import React from "react";
+///commmentcommment
 const ModelViewerComponent = () => {
   const { currModel } = useSelector((state) => state.model);
   const [tooltipData, setTooltipData] = useState({

@@ -5,6 +5,7 @@ import ModelHotspot from "../../Component/Model/ModelHotpot";
 import ModelAll from "../../Component/Model/ModelAll";
 import React, { useEffect, useState } from "react";
 import { getModelList } from "../../Service";
+import { Col, Row } from "antd";
 
 export default function Model() {
   const [modelList, setmodelList] = useState([]);
@@ -19,17 +20,17 @@ export default function Model() {
 
   return (
     <>
-      <div className="model">
-        <div className="model__left">
+      <Row className="model">
+        <Col span={4} xs={24} lg={4} className="model__left">
           <ModelHotspot />
-        </div>
-        <div className="model__main">
+        </Col>
+        <Col span={14} xs={24} lg={14} className="model__main">
           <ModelViewerComponent />
-        </div>
-        <div className="model__right">
+        </Col>
+        <Col span={6} xs={24} lg={6} className="model__right">
           <ModelAll modelList={modelList} />
-        </div>
-      </div>
+        </Col>
+      </Row>
     </>
   );
 }

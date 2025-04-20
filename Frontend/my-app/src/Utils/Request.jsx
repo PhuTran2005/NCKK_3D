@@ -1,4 +1,4 @@
-const API_DOMAIN = "https://version-web-3d-64-5.onrender.com/api/v1/model";
+const API_DOMAIN = "https://version-web-3d-64-5.onrender.com/api/v1/";
 
 const Request = async (url, method = "GET", body = null, options = {}) => {
   console.log(API_DOMAIN + url);

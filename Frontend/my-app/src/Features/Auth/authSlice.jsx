@@ -1,5 +1,6 @@
 // src/features/auth/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { deleteCookie } from "../../helper/cookies";
 
 const initialState = {
   user: null,
@@ -15,6 +16,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
     },
     logout: (state) => {
+      deleteCookie("token");
       state.user = null;
       state.isAuthenticated = false;
     },

@@ -8,7 +8,7 @@ const { Option } = Select;
 export default function ModelHotspot() {
   const { currModel } = useSelector((state) => state.model);
   const screens = useBreakpoint();
-
+  const handleOnchange = () => {};
   return (
     <>
       {currModel.hotspots.length > 0 ? (
@@ -23,7 +23,7 @@ export default function ModelHotspot() {
               }}
             >
               {currModel.hotspots.map((item, index) => (
-                <Option key={index} value={item.info}>
+                <Option key={index} value={item.info} onChange={handleOnchange}>
                   {item.info}
                 </Option>
               ))}

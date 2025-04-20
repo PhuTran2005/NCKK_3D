@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Asigment.scss";
 import { getAssignment } from "../../Service/AsigmentService";
+import { Col, Row } from "antd";
 
 export default function Assigment() {
   const [dataQuestionList, setDataQuestionList] = useState([]);
@@ -34,8 +35,8 @@ export default function Assigment() {
   };
   return (
     <>
-      <div className="assignment">
-        <div className="assignment__option">
+      <Row className="assignment">
+        <Col className="assignment__option" span={6} xs={24} lg={6}>
           <h3 className="assignment__option--title">Tuỳ chọn</h3>
           <div className="assignment__option--content">
             <h4>Câu hỏi: </h4>
@@ -52,8 +53,9 @@ export default function Assigment() {
           <div onClick={handleSubmit} className="assignment__submit">
             Nộp bài
           </div>
-        </div>
-        <div className="assignment__quiz">
+        </Col>
+
+        <Col className="assignment__quiz" span={18} xs={24} lg={18}>
           <div className="assignment__quiz--title">
             <h4>
               Câu hỏi <span></span> :
@@ -78,8 +80,8 @@ export default function Assigment() {
               ))}
             </div>
           </div>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </>
   );
 }

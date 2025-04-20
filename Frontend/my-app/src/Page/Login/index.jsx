@@ -4,12 +4,13 @@ import { Form, Input, Button, notification } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../Features/Auth/authSlice";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../helper/cookies";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const onFinish = async (values) => {
     setLoading(true);
     try {
@@ -29,13 +30,16 @@ const Login = () => {
       //   const data = await response.json();
 
       // console.log(data);
-      // setCookie("token",data.token);
+      setCookie("token", "data.token");
       dispatch(loginSuccess(values));
       notification.success({
         message: "Thành công",
         description: "Bạn đã đăng nhập thành công!",
         duration: 2, // thời gian hiện thông báo (giây)
       });
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
       notification.error({
         message: error,

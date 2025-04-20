@@ -109,7 +109,7 @@ export default function Home() {
                 src={cpu}
                 alt="example"
               />
-              <p>Mô hình hóa 3D CPU, ALU, RAM, Bus, Cache</p>
+              <p>Mô phỏng kiến trúc máy tính Harvard / Von Neumann</p>
             </div>
             <div>
               <img
@@ -117,7 +117,9 @@ export default function Home() {
                 src={cpu}
                 alt="example"
               />
-              <p>Mô hình hóa 3D CPU, ALU, RAM, Bus, Cache</p>
+              <p>
+                Tương tác trực quan - Click để xem thông tin từng thành phần
+              </p>
             </div>
             <div>
               <img
@@ -125,15 +127,7 @@ export default function Home() {
                 src={cpu}
                 alt="example"
               />
-              <p>Mô hình hóa 3D CPU, ALU, RAM, Bus, Cache</p>
-            </div>
-            <div>
-              <img
-                style={{ height: "30px", width: "30px" }}
-                src={cpu}
-                alt="example"
-              />
-              <p>Mô hình hóa 3D CPU, ALU, RAM, Bus, Cache</p>
+              <p>Chế độ học tập - Câu hỏi trắc nghiệm, ghép hình</p>
             </div>
           </Col>
         </Row>

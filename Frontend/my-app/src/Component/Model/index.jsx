@@ -13,9 +13,13 @@ const ModelViewerComponent = () => {
     y: 0,
   });
   const modelViewerRef = useRef(null);
-  const handleModelChange = () => {};
+  const handleModelChange = () => {
+    console.log("oce");
+  };
   const handleHotspotClick = (event) => {
+    console.log(event.target);
     event.stopPropagation();
+    console.log("yep");
     const target = event.target;
 
     const img = target.getAttribute("data-img");

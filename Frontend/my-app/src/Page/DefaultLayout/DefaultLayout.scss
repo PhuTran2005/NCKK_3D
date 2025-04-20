@@ -59,6 +59,8 @@
     .header {
       padding: 5px;
       min-height: 50px;
+      left: 0;
+      right: 0;
     }
     .menu-button {
       display: flex;
@@ -73,12 +75,13 @@
 }
 
 .menu-button {
-  font-size: 28px;
+  font-size: 24.44px;
   background: none;
   color: white;
   border: none;
   cursor: pointer;
   display: none;
+  padding: 0;
 }
 
 .logo {

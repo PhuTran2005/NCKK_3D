@@ -10,22 +10,22 @@ import { Avatar, Col, Row } from "antd";
 const intitTeam = [
   {
     name: "Cao Xuân Điệp",
-    mssv: "6451071091",
+    mssv: "6451071019",
   },
   {
-    name: "Cao Xuân Điệp",
-    mssv: "6451071091",
+    name: "Trần Văn Phú",
+    mssv: "6451071060",
   },
   {
-    name: "Cao Xuân Điệp",
-    mssv: "6451071091",
+    name: "Phan Quốc Thắng",
+    mssv: "6451071073",
   },
   {
-    name: "Cao Xuân Điệp",
-    mssv: "6451071091",
+    name: "Trần Đình Võ",
+    mssv: "6451071088",
   },
   {
-    name: "Cao Xuân Điệp",
+    name: "Phạm Hải Yến",
     mssv: "6451071091",
   },
 ];
@@ -84,7 +84,7 @@ export default function Home() {
         <div className="homepage__infor">
           {intitTeam.map((item, index) => (
             <div key={index} className="homepage__infor__avatar">
-              <Avatar size={64} icon={<UserOutlined />} />
+              <Avatar size={100} icon={<UserOutlined />} />
               <p>{item.name}</p>
               <p>{item.mssv}</p>
             </div>

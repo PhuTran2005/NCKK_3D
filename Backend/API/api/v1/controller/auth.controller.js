@@ -3,8 +3,9 @@ const md5 = require('md5') ;
 module.exports.login = async (req, res) => {
   const account = await Account.findOne({ loginName: req.body.loginName });
   if (account.password == md5(req.body.password)) {
-    res.json({code : 200 , message: "Login Success", token: account.token });
-    res.locals.loginName = req.body.loginName ;
+    const account = await Account.find({loginName : req.body.loginName , delete : false}) ;
+    res.json({code : 200 , message: "Login Success", token: account.token , account_id : account._id });
+    // res.locals.loginName = req.body.loginName ;
   }
 
   else res.json({code : 400 , message : "Invalid Login Name or Password" });

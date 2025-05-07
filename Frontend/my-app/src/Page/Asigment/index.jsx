@@ -16,6 +16,7 @@ export default function Assigment() {
   const [score, setScore] = useState(0);
   const [detailAnswer, setDetailAnswer] = useState(false);
   const [answerDetail, setAnswerDetail] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [examList] = useState([
     { id: 1, name: "Đề số 1" },
     { id: 2, name: "Đề số 2" },
@@ -36,11 +37,16 @@ export default function Assigment() {
 
   useEffect(() => {
     const fetchApi = async () => {
-      const res = await getAssignment();
-      console.log(res);
-      setDataQuestionList(res);
-      if (res.length > 0) {
-        setQuestion(res[0]);
+      try {
+        const res = await getAssignment();
+        console.log(res);
+        setDataQuestionList(res);
+        if (res.length > 0) {
+          setQuestion(res[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch assignments:", error);
+        message.error("Không thể tải câu hỏi. Vui lòng thử lại sau.");
       }
     };
     fetchApi();
@@ -78,7 +84,35 @@ export default function Assigment() {
     setDetailAnswer(true);
   };
 
+  const submitQuiz = async (option) => {
+    try {
+      setIsSubmitting(true);
+      const result = await postTrainingResult(option);
+      console.log(result);
+
+      const finalScore = calculateScore();
+      setScore(finalScore);
+      setShowResult(true);
+
+      // Reset submission state after successful submission
+      setIsSubmitting(false);
+
+      // Return success to indicate the quiz was submitted
+      return true;
+    } catch (error) {
+      console.error("Failed to submit quiz:", error);
+      message.error("Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.");
+      setIsSubmitting(false);
+      return false;
+    }
+  };
+
   const handleSubmit = async () => {
+    // Prevent multiple submissions
+    if (isSubmitting) {
+      return;
+    }
+
     console.log(selectedAnswers);
     const option = {
       account_id: userId,
@@ -93,12 +127,11 @@ export default function Assigment() {
       }),
       score: calculateScore(),
     };
-    // console.log(option);
-    const result = await postTrainingResult(option);
-    console.log(result);
+
     setAnswerDetail(option.answers);
     const quantityNoAns =
       dataQuestionList.length - Object.keys(selectedAnswers).length;
+
     if (quantityNoAns > 0) {
       Swal.fire({
         title: "Bạn chắc chắn nộp chứ",
@@ -111,17 +144,11 @@ export default function Assigment() {
         cancelButtonText: "Không, Tôi cần hoàn thành nó!",
       }).then((result) => {
         if (result.isConfirmed) {
-          // submitQuiz(option);
-          const finalScore = calculateScore();
-          setScore(finalScore);
-          setShowResult(true);
+          submitQuiz(option);
         }
       });
     } else {
-      const finalScore = calculateScore();
-      setScore(finalScore);
-      setShowResult(true);
-      // submitQuiz(option);
+      submitQuiz(option);
     }
   };
 
@@ -207,8 +234,17 @@ export default function Assigment() {
                 Làm lại
               </div>
             ) : (
-              <div onClick={handleSubmit} className="assignment__submit">
-                Nộp bài
+              <div
+                onClick={handleSubmit}
+                className={`assignment__submit ${
+                  isSubmitting ? "submitting" : ""
+                }`}
+                style={{
+                  opacity: isSubmitting ? 0.7 : 1,
+                  cursor: isSubmitting ? "not-allowed" : "pointer",
+                }}
+              >
+                {isSubmitting ? "Đang nộp..." : "Nộp bài"}
               </div>
             )}
           </div>

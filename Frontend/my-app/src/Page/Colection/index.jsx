@@ -33,13 +33,16 @@ import {
   CloseCircleOutlined,
 } from "@ant-design/icons";
 import "./Colection.scss";
+import { getAssignment } from "../../Service/AsigmentService";
 
 export default function Colection() {
   const [loading, setLoading] = useState(true);
   const [historyData, setHistoryData] = useState([]);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedAttempt, setSelectedAttempt] = useState(null);
+  const [allQuizzes, setAllQuizzes] = useState([]);
   const userId = getCookie("id");
+
   useEffect(() => {
     fetchHistoryData();
   }, []);
@@ -48,15 +51,35 @@ export default function Colection() {
     try {
       setLoading(true);
 
+      const quizzes = await getAssignment();
+      setAllQuizzes(quizzes);
+
       const response = await getTrainingResult();
       const userResults = response.filter((item) => item.account_id === userId);
 
       const processedData = userResults
         .map((item, index) => {
-          const totalQuestions = item.answers ? item.answers.length : 0;
-          const correctAnswers = item.answers
-            ? item.answers.filter((answer) => answer.isCorrect).length
-            : 0;
+          let totalQuestions = 0;
+          let correctAnswers = 0;
+
+          const answersWithDetails = item.answers.map((answer) => {
+            const quiz = quizzes.find((q) => q._id === answer.quizId);
+            const isCorrect = quiz && quiz.correct_answer === answer.answer;
+
+            if (quiz) {
+              totalQuestions++;
+              if (isCorrect) {
+                correctAnswers++;
+              }
+            }
+
+            return {
+              ...answer,
+              isCorrect: isCorrect,
+              correct_answer: quiz ? quiz.correct_answer : "N/A",
+              question: quiz ? quiz.question : "N/A",
+            };
+          });
 
           return {
             key: index,
@@ -68,7 +91,7 @@ export default function Colection() {
             totalQuestions: totalQuestions,
             correctAnswers: correctAnswers,
             timeSpent: "N/A",
-            answers: item.answers || [],
+            answers: answersWithDetails,
             rawData: item,
           };
         })
@@ -274,13 +297,13 @@ export default function Colection() {
 
       <Modal
         title={`Chi tiết bài làm - ${selectedAttempt?.examName}`}
-        visible={detailModalVisible}
+        open={detailModalVisible}
         onCancel={handleDetailModalClose}
         footer={null}
         width={700}
         className="detail-modal"
       >
-        {selectedAttempt && (
+        {selectedAttempt ? (
           <div className="attempt-detail">
             <div className="attempt-info">
               <Row gutter={[16, 16]}>
@@ -353,22 +376,28 @@ export default function Colection() {
               </div>
             </div>
 
-            {selectedAttempt.answers && selectedAttempt.answers.length > 0 ? (
+            {selectedAttempt.answers?.length > 0 ? (
               <div className="answer-details">
                 <h3>Chi tiết câu trả lời</h3>
                 {selectedAttempt.answers.map((answer, index) => (
                   <div key={index} className="answer-item">
                     <div className="question-number">Câu {index + 1}</div>
                     <div className="answer-content">
+                      <div className="question-text">
+                        {answer.question !== "N/A"
+                          ? answer.question
+                          : "Không có thông tin câu hỏi"}
+                      </div>
                       {answer.answer ? (
-                        <div>
+                        <>
                           <div>
                             Câu trả lời: <strong>{answer.answer}</strong>
                           </div>
                           <div>
-                            Đáp án đúng: <strong>{answer.correctAnswer}</strong>
+                            Đáp án đúng:{" "}
+                            <strong>{answer.correct_answer}</strong>
                           </div>
-                        </div>
+                        </>
                       ) : (
                         <div>Chưa trả lời</div>
                       )}
@@ -401,7 +430,7 @@ export default function Colection() {
               </Button>
             </div>
           </div>
-        )}
+        ) : null}
       </Modal>
     </div>
   );

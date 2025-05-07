@@ -13,7 +13,7 @@ module.exports.index = async (req, res) => {
 // create trainingResult .
 module.exports.create = async (req, res) => {
   try {
-    const account = await Account.find({loginName : loginName , delete : false}) ;
+    const account = await Account.find({loginName : res.locals.loginName , delete : false}) ;
     let listQuestion = req.body.listQuestion.split("-");
     let listSelect = req.body.listSelect.split("-");
     console.log(listQuestion);

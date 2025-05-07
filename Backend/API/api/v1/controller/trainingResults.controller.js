@@ -18,7 +18,6 @@ module.exports.create = async (req, res) => {
     console.log(listQuestion);
     console.log(listSelect);
     console.log(parseInt(req.body.score));
-    console.log(account._id) ;
     const trainingResult = new TrainingResults({
       account_id : req.body.account_id ,
       listQuestion : listQuestion ,

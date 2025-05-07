@@ -13,15 +13,9 @@ module.exports.index = async (req, res) => {
 // create trainingResult .
 module.exports.create = async (req, res) => {
   try {
-    let listQuestion = req.body.listQuestion.split("-");
-    let listSelect = req.body.listSelect.split("-");
-    console.log(listQuestion);
-    console.log(listSelect);
-    console.log(parseInt(req.body.score));
     const trainingResult = new TrainingResults({
       account_id : req.body.account_id ,
-      listQuestion : listQuestion ,
-      listSelect : listSelect ,
+      answer : req.body.answer ,
       score : parseInt(req.body.score)
   });
     await trainingResult.save();

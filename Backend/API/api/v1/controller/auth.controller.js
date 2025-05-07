@@ -5,6 +5,7 @@ module.exports.login = async (req, res) => {
   
   if (account.password == md5(req.body.password)) {
     const account = await Account.findOne({loginName : req.body.loginName , delete : false}) ;
+    res.cookie("account_id" , account._id) ;
     res.json({code : 200 , message: "Login Success", token: account.token , account_id : account._id });
     // res.locals.loginName = req.body.loginName ;
   }

@@ -13,6 +13,10 @@ module.exports.login = async (req, res) => {
 
 module.exports.signup = async (req, res) => {
   try {
+    const checkAccount = await Account.find({loginName : req.body.loginName , delete : false}) ;
+    if (checkAccount) {
+      res.json({code : 400 , message : "Account Already Exist" });
+    }
     const account = new Account({
       loginName: req.body.loginName,
       password: md5(req.body.password),

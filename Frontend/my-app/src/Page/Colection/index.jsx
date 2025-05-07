@@ -40,7 +40,6 @@ export default function Colection() {
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedAttempt, setSelectedAttempt] = useState(null);
   const userId = getCookie("id");
-
   useEffect(() => {
     fetchHistoryData();
   }, []);

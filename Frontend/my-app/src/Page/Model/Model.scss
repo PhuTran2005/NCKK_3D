@@ -10,14 +10,13 @@
   &__left {
     padding: 5px;
     border: 1px solid black;
-    width: 10%;
   }
   &__main {
-    width: 65%;
   }
   &__right {
     padding: 5px;
     border: 1px solid black;
-    width: 25%;
+  }
+  @media (max-width: 750px) {
   }
 }

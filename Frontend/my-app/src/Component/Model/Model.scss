@@ -57,14 +57,22 @@ model-viewer {
   transition: opacity 0.3s ease-in-out;
   height: 150px;
   width: 150px;
+  z-index: 50;
 }
 #tooltip-img {
   width: 100%;
+  height: 70%;
   object-fit: cover;
 }
 /* Input & Button */
 .input-container {
   margin: 15px 0;
+}
+@media (max-width: 600px) {
+  .tooltip {
+    height: 100px;
+    width: 100px;
+  }
 }
 input,
 button {
@@ -86,28 +94,290 @@ button:hover {
 img {
   object-fit: cover;
 }
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --light-bg: #f9f9f9;
+  --border-color: #ddd;
+  --text-color: #333;
+  --shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  --primary: #007bff;
+  --primary-light: #e6f7ff;
+  --danger: #ff4d4f;
+  --danger-light: #fff1f0;
+  --tooltip-bg: rgba(0, 0, 0, 0.85);
+}
+
+.Model {
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+
+  h2 {
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  model-viewer {
+    width: 100%;
+    height: 500px;
+    border: 3px solid var(--primary-color);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s;
+    z-index: 1;
+
+    &:hover {
+      transform: scale(1.005);
+    }
+  }
+
+  .hotspot {
+    background: rgba(255, 69, 58, 0.85);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+    cursor: pointer;
+    position: absolute;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(255, 69, 58, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 69, 58, 0);
+    }
+  }
+
+  .tooltip {
+    position: absolute;
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    display: none;
+    transition: opacity 0.3s ease-in-out;
+    width: 160px;
+    z-index: 50;
+    animation: fadeBounce 0.4s ease;
+
+    #tooltip-img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+:root {
+  --primary: #007bff;
+  --primary-light: #e6f7ff;
+  --danger: #ff4d4f;
+  --danger-light: #fff1f0;
+}
+
 .model {
+  display: flex;
+  gap: 15px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
   &__left {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 200px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) #f0f0f0;
+    padding: 10px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      border-radius: 10px;
+    }
+
     ul {
       li {
-        border: 1px solid black;
-        padding: 5px;
-        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        background: linear-gradient(135deg, #fdfbfb, #ebedee);
+        padding: 12px 18px;
+        margin-bottom: 12px;
+        border-radius: 10px;
         cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        font-size: 15px;
+
+        &:hover {
+          background: var(--primary-light);
+          transform: translateX(6px);
+          box-shadow: 0 6px 16px rgba(0, 123, 255, 0.2),
+            0 0 8px rgba(0, 123, 255, 0.1);
+
+          &::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 50%;
+            left: 105%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: nowrap;
+            z-index: 10;
+            pointer-events: none;
+            animation: fadeBounce 0.4s ease forwards;
+            backdrop-filter: blur(3px);
+          }
+        }
+
+        &::after {
+          content: "";
+          opacity: 0;
+        }
       }
     }
   }
+  &__main {
+  }
   &__right {
+    width: 500px;
+    overflow-y: auto;
+    height: 100vh;
+    flex: 1;
+    padding: 10px;
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      border-radius: 10px;
+    }
+
     ul {
-      .active {
-        border: 2px solid red;
-      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+
       li {
-        border: 1px solid black;
-        padding: 5px;
-        margin-bottom: 10px;
+        width: calc(50% - 10px);
+        border: 1px solid #ccc;
+        padding: 16px;
+        border-radius: 12px;
+        background: #fff;
+        transition: all 0.3s ease;
         cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+        &:hover {
+          transform: scale(1.03);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        &.active {
+          border: 2px solid var(--danger);
+          background: var(--danger-light);
+          box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.3);
+        }
       }
     }
+  }
+  @media (max-width: 500px) {
+    model-viewer {
+      width: 100%;
+      height: 300px;
+      border: 3px solid #007bff;
+      z-index: 1;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    &__right {
+      height: 300px;
+    }
+    &__left {
+      border: none;
+    }
+    &__main {
+      // height: ;
+    }
+  }
+}
+
+// Tooltip animation
+@keyframes fadeBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(0) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.model__detail {
+  height: 200px;
+  background: transparent;
+  padding: 10px;
+  border-radius: 16px;
+  color: #fff;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  margin-top: 20px;
+  -webkit-scrollbar {
+    width: 5px;
+  }
+  -webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 10px;
+  }
+}
+
+.model__detail h2 {
+  font-size: 32px;
+  margin-bottom: 16px;
+  color: #5271ff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px #00ffff, 0 0 16px rgba(0, 255, 255, 0.6);
+  animation: glowText 2s ease-in-out infinite alternate;
+}
+
+.model__detail p {
+  font-size: 18px;
+  color: #092124;
+  line-height: 1.6;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
+  max-width: 800px;
+}
+
+/* Optional animation */
+@keyframes glowText {
+  from {
+    text-shadow: 0 0 6px #00ffff, 0 0 10px #00ffff;
+  }
+  to {
+    text-shadow: 0 0 12px #00ffff, 0 0 24px rgba(0, 255, 255, 0.8);
   }
 }

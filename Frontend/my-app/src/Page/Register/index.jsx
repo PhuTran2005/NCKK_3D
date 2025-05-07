@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Checkbox, message } from "antd";
-import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
+import "@ant-design/v5-patch-for-react-19";
+import { Form, Input, Button, Checkbox, message, notification } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import "./Register.scss"; // Nhớ tạo file CSS này
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
     setLoading(true);
-    // Giả sử bạn sẽ gửi thông tin này tới API để tạo tài khoản người dùng
-    console.log("Thông tin đăng ký: ", values);
 
-    // Mô phỏng hành động đăng ký thành công
     if (values.password === values.confirmPassword) {
       try {
         let name = values.username;
@@ -26,108 +25,112 @@ const Register = () => {
             body: JSON.stringify({ loginName: name, password: pw }),
           }
         );
-        const res = response;
+        const res = await response.json();
         console.log(res);
+
+        notification.success({
+          message: "Đăng ký thành công",
+          description: "Bạn đã đăng kí thành công!",
+          duration: 2, // thời gian hiện thông báo (giây)
+        });
       } catch {
-        console.log("erro");
+        notification.error({
+          message: "Đăng ký thất bại",
+          description: "Bạn đã đăng kí không thành công!",
+          duration: 2, // thời gian hiện thông báo (giây)
+        });
       }
-      message.success("Đăng ký thành công!");
-      // Chuyển hướng hoặc redirect sau khi đăng ký thành công
     } else {
-      message.error("Mật khẩu và xác nhận mật khẩu không khớp!");
+      notification.error({
+        message: "Mật khẩu và xác nhận mật khẩu không khớp!",
+        description: "Mật khẩu và xác nhận mật khẩu không khớp!!",
+        duration: 2, // thời gian hiện thông báo (giây)
+      });
     }
+
     setLoading(false);
   };
 
   return (
-    <div
-      className="register-container"
-      style={{
-        width: "100%",
-        maxWidth: "400px",
-        margin: "0 auto",
-        padding: "50px 20px",
-      }}
-    >
-      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Đăng Ký</h2>
+    <div className="register-wrapper">
+      <div className="register-card">
+        <h2>Đăng Ký</h2>
 
-      <Form
-        name="register"
-        onFinish={onFinish}
-        initialValues={{ remember: true }}
-        layout="vertical"
-      >
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Vui lòng nhập tên tài khoản!" }]}
-        >
-          <Input
-            prefix={<UserOutlined />}
-            placeholder="Tên tài khoản"
-            size="large"
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
-          hasFeedback
-        >
-          <Input.Password
-            prefix={<LockOutlined />}
-            placeholder="Mật khẩu"
-            size="large"
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="confirmPassword"
-          dependencies={["password"]}
-          rules={[
-            { required: true, message: "Vui lòng xác nhận mật khẩu!" },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("password") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error("Mật khẩu và xác nhận mật khẩu không khớp!")
-                );
-              },
-            }),
-          ]}
-          hasFeedback
-        >
-          <Input.Password
-            prefix={<LockOutlined />}
-            placeholder="Xác nhận mật khẩu"
-            size="large"
-          />
-        </Form.Item>
-
-        <Form.Item name="agree" valuePropName="checked">
-          <Checkbox>
-            Tôi đồng ý với <a href="/terms">Điều khoản sử dụng</a>
-          </Checkbox>
-        </Form.Item>
-
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="large"
-            block
-            loading={loading}
+        <Form name="register" onFinish={onFinish} layout="vertical">
+          <Form.Item
+            name="username"
+            rules={[
+              { required: true, message: "Vui lòng nhập tên tài khoản!" },
+            ]}
           >
-            Đăng Ký
-          </Button>
-        </Form.Item>
-      </Form>
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="Tên tài khoản"
+              size="large"
+            />
+          </Form.Item>
 
-      <div style={{ textAlign: "center", marginTop: "10px" }}>
-        <p>
-          Đã có tài khoản? <a href="/login">Đăng nhập</a>
-        </p>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+            hasFeedback
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Mật khẩu"
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="confirmPassword"
+            dependencies={["password"]}
+            hasFeedback
+            rules={[
+              { required: true, message: "Vui lòng xác nhận mật khẩu!" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("Mật khẩu và xác nhận mật khẩu không khớp!")
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Xác nhận mật khẩu"
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item name="agree" valuePropName="checked">
+            <Checkbox>
+              Tôi đồng ý với <a href="/terms">Điều khoản sử dụng</a>
+            </Checkbox>
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={loading}
+            >
+              Đăng Ký
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <div className="register-footer">
+          <p>
+            Đã có tài khoản? <a href="/login">Đăng nhập</a>
+          </p>
+        </div>
       </div>
     </div>
   );

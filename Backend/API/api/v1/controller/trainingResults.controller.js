@@ -15,7 +15,7 @@ module.exports.create = async (req, res) => {
   try {
     const trainingResult = new TrainingResults({
       account_id : req.body.account_id ,
-      answer : req.body.answer ,
+      answers : req.body.answers ,
       score : parseInt(req.body.score)
   });
     await trainingResult.save();

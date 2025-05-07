@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const trainingResultsSchema = new mongoose.Schema({
   account_id : String ,
   // danh sách câu hỏi .
-  answer : {
+  answers : {
     type : Array ,
     default : [] ,
   } ,

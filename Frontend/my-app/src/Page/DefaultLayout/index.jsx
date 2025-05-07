@@ -32,7 +32,7 @@ export default function DefaultLayout() {
                 <NavLink to="/assigment">Luyện tập</NavLink>
               </li>
               <li>
-                <NavLink to="/colection">Bộ sưu tập</NavLink>
+                <NavLink to="/colection">Lịch sử luyện tập</NavLink>
               </li>
             </ul>
           </div>

@@ -1,0 +1,165 @@
+.collection-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .collection-header {
+    margin-bottom: 24px;
+    text-align: center;
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #666;
+    }
+  }
+
+  .loading-container {
+    text-align: center;
+    padding: 50px 0;
+
+    p {
+      margin-top: 16px;
+      color: #666;
+    }
+  }
+
+  .stats-row {
+    margin-bottom: 24px;
+  }
+
+  .chart-card {
+    margin-bottom: 24px;
+
+    h3 {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+  }
+
+  .table-card {
+    overflow: auto;
+  }
+
+  .history-row {
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: #f0f9ff;
+    }
+  }
+
+  .score-tag {
+    font-weight: bold;
+    padding: 2px 8px;
+  }
+
+  .empty-data {
+    padding: 40px 0;
+  }
+}
+
+// Modal styles
+.detail-modal {
+  .attempt-detail {
+    .attempt-info {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+
+      .info-item {
+        margin: 8px 0;
+      }
+
+      .score-success {
+        color: #52c41a;
+      }
+
+      .score-warning {
+        color: #faad14;
+      }
+
+      .score-error {
+        color: #f5222d;
+      }
+    }
+
+    .result-summary {
+      margin-bottom: 24px;
+
+      h3 {
+        margin-bottom: 12px;
+      }
+
+      .progress-bar {
+        height: 12px;
+        background-color: #f0f0f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 8px;
+
+        .progress-fill {
+          height: 100%;
+          background-color: #1db8e7;
+          border-radius: 6px;
+          transition: width 0.3s;
+        }
+      }
+
+      .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #666;
+      }
+    }
+
+    .answer-details {
+      h3 {
+        margin-bottom: 16px;
+      }
+
+      .answer-item {
+        display: flex;
+        padding: 12px;
+        border-bottom: 1px solid #f0f0f0;
+        align-items: center;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .question-number {
+          flex: 0 0 80px;
+          font-weight: bold;
+        }
+
+        .answer-content {
+          flex: 1;
+
+          div {
+            margin-bottom: 4px;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+
+        .answer-status {
+          width: 100px;
+          text-align: right;
+        }
+      }
+    }
+
+    .modal-actions {
+      margin-top: 24px;
+      text-align: right;
+    }
+  }
+}

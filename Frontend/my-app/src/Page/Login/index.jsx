@@ -14,23 +14,25 @@ const Login = () => {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      //   const { username, password } = values;
+      const { username, password } = values;
 
-      //   const response = await fetch(
-      //     "https://version-web-3d-64-5.onrender.com/auth/login",
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({ loginName: username, password: password }),
-      //     }
-      //   );
+      const response = await fetch(
+        "https://version-web-3d-64-5.onrender.com/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ loginName: username, password: password }),
+        }
+      );
 
-      //   const data = await response.json();
+      const data = await response.json();
 
-      // console.log(data);
-      setCookie("token", "data.token");
+      console.log(data);
+      setCookie("token", data.token);
+      setCookie("id", data.account_id);
+
       dispatch(loginSuccess(values));
       notification.success({
         message: "Thành công",

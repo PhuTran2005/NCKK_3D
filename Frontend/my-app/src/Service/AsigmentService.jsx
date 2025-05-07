@@ -1,4 +1,4 @@
-import { Get } from "../Utils/Request";
+import { Get, Post } from "../Utils/Request";
 
 export const getAssignment = async () => {
   const data = await Get("assignment");

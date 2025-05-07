@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const trainingResultsSchema = new mongoose.Schema({
+  account_id : String ,
   // danh sách câu hỏi .
   listQuestion: {
     type: Array,

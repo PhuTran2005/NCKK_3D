@@ -1,5 +1,5 @@
 const TrainingResults = require("../../../model/trainingResults.model");
-
+const Account = require("../../../model/account.model") ;
 // get all training results
 module.exports.index = async (req, res) => {
   try {
@@ -13,12 +13,15 @@ module.exports.index = async (req, res) => {
 // create trainingResult .
 module.exports.create = async (req, res) => {
   try {
+    const account = await Account.find({loginName : res.locals.loginName , delete : false}) ;
     let listQuestion = req.body.listQuestion.split("-");
     let listSelect = req.body.listSelect.split("-");
     console.log(listQuestion);
     console.log(listSelect);
     console.log(parseInt(req.body.score));
+    console.log(account._id) ;
     const trainingResult = new TrainingResults({
+      account_id : account._id ,
       listQuestion : listQuestion ,
       listSelect : listSelect ,
       score : parseInt(req.body.score)

@@ -8,6 +8,10 @@ const accountSchema = new mongoose.Schema(
         token : {
             type : String , 
             default : generateToken.generateToken(20) ,
+        } ,
+        delete : {
+            type : Boolean ,
+            default : false ,
         }
     }
 )

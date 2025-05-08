@@ -32,21 +32,26 @@ const Login = () => {
 
       if (data.code == 200) {
         setCookie("token", data.token);
-        setCookie("userId", data.userId);
+        setCookie("id", data.account_id);
         dispatch(loginSuccess(values));
         notification.success({
-          message: "Thành công",
-          description: "Bạn đã đăng nhập thành công!",
+          message: data.message,
+          description: data.message,
           duration: 2, // thời gian hiện thông báo (giây)
         });
         setTimeout(() => {
           navigate("/");
-        }, 2000);
+        }, 1000);
+      } else {
+        notification.error({
+          message: data.message,
+          description: data.message,
+        });
       }
     } catch (error) {
       notification.error({
         message: error,
-        description: "Tên đăng nhập hoặc mật khẩu không đúng!",
+        description: error,
       });
     }
     setLoading(false);

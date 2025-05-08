@@ -3,15 +3,10 @@ const mongoose = require("mongoose");
 const trainingResultsSchema = new mongoose.Schema({
   account_id : String ,
   // danh sách câu hỏi .
-  listQuestion: {
-    type: Array,
-    default: [],
-  },
-  // danh sách đáp án đã chọn .
-  listSelect: {
-    type: Array,
-    default: [],
-  },
+  answers : {
+    type : Array ,
+    default : [] ,
+  } ,
   score: Number,
   time: {
     type: Date,

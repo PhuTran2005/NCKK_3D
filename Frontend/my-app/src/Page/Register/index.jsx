@@ -27,19 +27,19 @@ const Register = () => {
             body: JSON.stringify({ loginName: username, password }),
           }
         );
-        const res = await response.json();
-        console.log(res);
+        const data = await response.json();
+        console.log(data);
 
-        if (res.code === 200) {
+        if (data.code === 200) {
           notification.success({
-            message: "Đăng ký thành công",
-            description: "Bạn đã đăng kí thành công!",
+            message: data.message,
+            description: data.message,
             duration: 2,
           });
           setTimeout(() => {
             navigate("/login");
-          }, 2000);
-        } else if (res.code === 400) {
+          }, 1000);
+        } else if (data.code === 400) {
           // 2. Set lỗi cho field username
           form.setFields([
             {
@@ -50,13 +50,13 @@ const Register = () => {
         } else {
           notification.error({
             message: "Đăng ký thất bại",
-            description: res.message || "Đã xảy ra lỗi.",
+            description: data.message || "Đã xảy ra lỗi.",
           });
         }
-      } catch {
+      } catch (err) {
         notification.error({
-          message: "Đăng ký thất bại",
-          description: "Đã xảy ra lỗi máy chủ!",
+          message: err,
+          description: err,
           duration: 2,
         });
       }

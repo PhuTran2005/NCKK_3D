@@ -29,10 +29,10 @@ export default function DefaultLayout() {
                 <NavLink to="/models">Mô hình</NavLink>
               </li>
               <li>
-                <NavLink to="/assigment">Luyện tập</NavLink>
+                <NavLink to="/assignment">Luyện tập</NavLink>
               </li>
               <li>
-                <NavLink to="/colection">Bộ sưu tập</NavLink>
+                <NavLink to="/colection">Lịch sử luyện tập</NavLink>
               </li>
             </ul>
           </div>
@@ -82,7 +82,7 @@ export default function DefaultLayout() {
               </div>
             </li>
             <li className="footer__copyrigth">
-              <p>CopyRight by IT</p>
+              <p>NCKH-2025</p>
             </li>
             <li className="footer__logo">
               <img src={logo} alt="logo" />

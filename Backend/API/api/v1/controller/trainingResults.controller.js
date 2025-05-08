@@ -13,17 +13,9 @@ module.exports.index = async (req, res) => {
 // create trainingResult .
 module.exports.create = async (req, res) => {
   try {
-    const account = await Account.find({loginName : res.locals.loginName , delete : false}) ;
-    let listQuestion = req.body.listQuestion.split("-");
-    let listSelect = req.body.listSelect.split("-");
-    console.log(listQuestion);
-    console.log(listSelect);
-    console.log(parseInt(req.body.score));
-    console.log(account._id) ;
     const trainingResult = new TrainingResults({
-      account_id : account._id ,
-      listQuestion : listQuestion ,
-      listSelect : listSelect ,
+      account_id : req.body.account_id ,
+      answers : req.body.answers ,
       score : parseInt(req.body.score)
   });
     await trainingResult.save();

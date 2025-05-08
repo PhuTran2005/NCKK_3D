@@ -20,8 +20,8 @@ const SidebarMenu = ({ isOpen, onClose }) => {
         <nav className="sidebar-nav">
           <Link to="/">Trang chủ</Link>
           <Link to="/models">Mô hình</Link>
-          <Link to="/assigment">Luyện tập</Link>
-          <Link to="/colection">Bộ sưu tập</Link>
+          <Link to="/assignment">Luyện tập</Link>
+          <Link to="/colection">Lịch sử luyện tập</Link>
           {isAuth ? (
             <Link to="/login">
               <Button onClick={handelLogout}>Logout</Button>

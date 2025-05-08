@@ -26,7 +26,7 @@ const AllRouters = () => {
           element: <Model />,
         },
         {
-          path: "assigment",
+          path: "assignment",
           element: (
             <ProtectedRoute>
               <Assigment />

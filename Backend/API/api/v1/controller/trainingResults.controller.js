@@ -16,7 +16,7 @@ module.exports.create = async (req, res) => {
     const trainingResult = new TrainingResults({
       account_id : req.body.account_id ,
       answers : req.body.answers ,
-      score : parseInt(req.body.score)
+      score : parseFloat(req.body.score)
   });
     await trainingResult.save();
     res.json({code : 200 , message : "Tạo thành công"});

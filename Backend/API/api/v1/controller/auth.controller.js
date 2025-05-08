@@ -20,6 +20,7 @@ module.exports.signup = async (req, res) => {
     const checkAccount = await Account.findOne({loginName : req.body.loginName , delete : false}) ;
     if (checkAccount) {
       res.json({code : 400 , message : "Account Already Exist" });
+      return;
     }
     const account = new Account({
       loginName: req.body.loginName,

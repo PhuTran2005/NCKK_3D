@@ -1,7 +1,7 @@
 const Account = require("../../../model/account.model");
 const md5 = require('md5') ;
 module.exports.login = async (req, res) => {
-  const account = await Account.findOne({ loginName: req.body.loginName });
+  const account = await Account.findOne({ loginName: req.body.loginName , delete : false });
   
   if (account.password == md5(req.body.password)) {
     const account = await Account.findOne({loginName : req.body.loginName , delete : false}) ;

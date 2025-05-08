@@ -1,8 +1,12 @@
+.choose__btn {
+  display: none;
+}
 .model {
   display: flex;
   display: flex;
   justify-content: space-between;
   min-height: 700px;
+  padding: 0 10px;
   gap: 10px;
   div {
     border-radius: 5px;
@@ -17,6 +21,22 @@
     padding: 5px;
     border: 1px solid black;
   }
-  @media (max-width: 750px) {
+}
+@media (max-width: 500px) {
+  .choose__btn {
+    display: flex;
+  }
+  .model {
+    &__left {
+      order: 2;
+      max-height: 200px;
+    }
+    &__main {
+      order: 3;
+    }
+    &__right {
+      display: none;
+      order: 1;
+    }
   }
 }

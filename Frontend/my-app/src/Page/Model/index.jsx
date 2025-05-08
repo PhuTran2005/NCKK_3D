@@ -6,17 +6,27 @@ import ModelAll from "../../Component/Model/ModelAll";
 import React, { useEffect, useState } from "react";
 import { getModelList } from "../../Service";
 import { Col, Row } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { changeModel } from "../../Features/Model/ModelSlice";
 
 export default function Model() {
   const [modelList, setmodelList] = useState([]);
+  const { currModel } = useSelector((state) => state.model);
+
+  const dispatch = useDispatch();
   useEffect(() => {
     const fetchAPI = async () => {
       const newData = await getModelList();
-      console.log(newData);
       setmodelList(newData);
     };
     fetchAPI();
   }, []);
+
+  useEffect(() => {
+    if (modelList.length > 0) {
+      dispatch(changeModel(modelList[0]));
+    }
+  }, [modelList]);
 
   return (
     <>

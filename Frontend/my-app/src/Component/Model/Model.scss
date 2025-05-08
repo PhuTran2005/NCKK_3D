@@ -187,6 +187,51 @@ img {
   --danger: #ff4d4f;
   --danger-light: #fff1f0;
 }
+.model__detail {
+  height: 200px;
+  background: transparent;
+  padding: 10px;
+  border-radius: 16px;
+  color: #fff;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  margin-top: 20px;
+  -webkit-scrollbar {
+    width: 5px;
+  }
+  -webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 10px;
+  }
+}
+
+.model__detail h2 {
+  font-size: 32px;
+  margin-bottom: 16px;
+  color: #5271ff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px #00ffff, 0 0 16px rgba(0, 255, 255, 0.6);
+  animation: glowText 2s ease-in-out infinite alternate;
+}
+
+.model__detail p {
+  font-size: 18px;
+  color: #092124;
+  line-height: 1.6;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
+  max-width: 800px;
+}
+
+/* Optional animation */
+@keyframes glowText {
+  from {
+    text-shadow: 0 0 6px #00ffff, 0 0 10px #00ffff;
+  }
+  to {
+    text-shadow: 0 0 12px #00ffff, 0 0 24px rgba(0, 255, 255, 0.8);
+  }
+}
 
 .model {
   display: flex;
@@ -318,6 +363,9 @@ img {
     &__main {
       // height: ;
     }
+    .model__detail {
+      height: auto;
+    }
   }
 }
 
@@ -334,50 +382,5 @@ img {
   100% {
     opacity: 1;
     transform: scale(1);
-  }
-}
-.model__detail {
-  height: 200px;
-  background: transparent;
-  padding: 10px;
-  border-radius: 16px;
-  color: #fff;
-  transition: all 0.3s ease;
-  overflow-y: auto;
-  margin-top: 20px;
-  -webkit-scrollbar {
-    width: 5px;
-  }
-  -webkit-scrollbar-thumb {
-    background-color: var(--primary);
-    border-radius: 10px;
-  }
-}
-
-.model__detail h2 {
-  font-size: 32px;
-  margin-bottom: 16px;
-  color: #5271ff;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 0 0 8px #00ffff, 0 0 16px rgba(0, 255, 255, 0.6);
-  animation: glowText 2s ease-in-out infinite alternate;
-}
-
-.model__detail p {
-  font-size: 18px;
-  color: #092124;
-  line-height: 1.6;
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
-  max-width: 800px;
-}
-
-/* Optional animation */
-@keyframes glowText {
-  from {
-    text-shadow: 0 0 6px #00ffff, 0 0 10px #00ffff;
-  }
-  to {
-    text-shadow: 0 0 12px #00ffff, 0 0 24px rgba(0, 255, 255, 0.8);
   }
 }

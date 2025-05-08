@@ -14,32 +14,35 @@ const Login = () => {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      //   const { username, password } = values;
+      const { username, password } = values;
 
-      //   const response = await fetch(
-      //     "https://version-web-3d-64-5.onrender.com/auth/login",
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({ loginName: username, password: password }),
-      //     }
-      //   );
+      const response = await fetch(
+        "https://version-web-3d-64-5.onrender.com/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ loginName: username, password: password }),
+        }
+      );
 
-      //   const data = await response.json();
+      const data = await response.json();
+      console.log(data);
 
-      // console.log(data);
-      setCookie("token", "data.token");
-      dispatch(loginSuccess(values));
-      notification.success({
-        message: "Thành công",
-        description: "Bạn đã đăng nhập thành công!",
-        duration: 2, // thời gian hiện thông báo (giây)
-      });
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      if (data.code == 200) {
+        setCookie("token", data.token);
+        setCookie("userId", data.userId);
+        dispatch(loginSuccess(values));
+        notification.success({
+          message: "Thành công",
+          description: "Bạn đã đăng nhập thành công!",
+          duration: 2, // thời gian hiện thông báo (giây)
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      }
     } catch (error) {
       notification.error({
         message: error,

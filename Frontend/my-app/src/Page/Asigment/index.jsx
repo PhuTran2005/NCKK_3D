@@ -6,6 +6,7 @@ import { getCookie } from "../../helper/cookies";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 import { postTrainingResult } from "../../Service/trainingResults";
+import MatchingGame from "../../Component/Model/MatchingGame";
 
 export default function Assigment() {
   const [originalQuestionList, setOriginalQuestionList] = useState([]);
@@ -26,6 +27,7 @@ export default function Assigment() {
     { id: 3, name: "Đề số 3" },
   ]);
   const userId = getCookie("id");
+  const [assignmentMode, setAssignmentMode] = useState("quiz");
 
   const handleExamChange = (value) => {
     setCurrentExam(value);
@@ -213,11 +215,6 @@ export default function Assigment() {
     return answer === dataQuestionList[index].correct_answer;
   };
 
-  const isAnswerCorrect = (questionId, answer) => {
-    const question = dataQuestionList.find((q) => q._id === questionId);
-    return question && answer === question.correct_answer;
-  };
-
   const getAnswerClass = (questionId, answer) => {
     if (!detailAnswer) {
       return selectedAnswers[questionId] === answer ? "selected" : "";
@@ -250,6 +247,21 @@ export default function Assigment() {
         <Col className="assignment__option" span={6} xs={24} lg={6}>
           <h3 className="assignment__option--title">Tuỳ chọn</h3>
           <div className="assignment__option--content">
+            <div style={{ marginBottom: 16 }}>
+              <Button
+                type={assignmentMode === "quiz" ? "primary" : "default"}
+                onClick={() => setAssignmentMode("quiz")}
+                style={{ marginRight: 8 }}
+              >
+                Trắc nghiệm
+              </Button>
+              <Button
+                type={assignmentMode === "matching" ? "primary" : "default"}
+                onClick={() => setAssignmentMode("matching")}
+              >
+                Ghép hình
+              </Button>
+            </div>
             <Select
               style={{ width: "100%", marginBottom: "20px" }}
               placeholder="Chọn đề thi"
@@ -353,58 +365,66 @@ export default function Assigment() {
         </Col>
 
         <Col className="assignment__quiz" span={18} xs={24} lg={18}>
-          <div className="assignment__quiz--title">
-            <h4>
-              Câu hỏi {dataQuestionList.indexOf(question) + 1}/
-              {dataQuestionList.length}
-            </h4>
-            {(showResult || submittedQuestionOrder.length > 0) &&
-              !detailAnswer && (
-                <div className="assignment__quiz--submitted-tag">Đã nộp</div>
-              )}
-          </div>
-          <div className="assignment__quiz--content">
-            <div className="assignment__quiz--question">
-              <span>{question.question}</span>
-              {detailAnswer && (
-                <span className="assignment__quiz--question-detail">
-                  {isTrueOrFalse(dataQuestionList.indexOf(question)) ? (
-                    <span className="detail-true">Đúng</span>
-                  ) : (
-                    <span className="detail-false">Sai</span>
+          {assignmentMode === "quiz" ? (
+            <>
+              <div className="assignment__quiz--title">
+                <h4>
+                  Câu hỏi {dataQuestionList.indexOf(question) + 1}/
+                  {dataQuestionList.length}
+                </h4>
+                {(showResult || submittedQuestionOrder.length > 0) &&
+                  !detailAnswer && (
+                    <div className="assignment__quiz--submitted-tag">
+                      Đã nộp
+                    </div>
                   )}
-                </span>
-              )}
-            </div>
-            <div className="assignment__quiz--answers">
-              {(question.answers || []).map((item, index) => (
-                <div
-                  className={`assignment__quiz--list ${getAnswerClass(
-                    question._id,
-                    item
-                  )} ${
-                    (showResult || submittedQuestionOrder.length > 0) &&
-                    !detailAnswer
-                      ? "disabled"
-                      : ""
-                  }`}
-                  key={index}
-                  onClick={() =>
-                    !detailAnswer &&
-                    !showResult &&
-                    submittedQuestionOrder.length === 0 &&
-                    handleAnswers(question._id, item)
-                  }
-                >
-                  <span>{ans(index)}</span>
-                  <span>{item}</span>
-                  {detailAnswer && item === question.correct_answer && (
-                    <span className="correct-answer-icon">✓</span>
+              </div>
+              <div className="assignment__quiz--content">
+                <div className="assignment__quiz--question">
+                  <span>{question.question}</span>
+                  {detailAnswer && (
+                    <span className="assignment__quiz--question-detail">
+                      {isTrueOrFalse(dataQuestionList.indexOf(question)) ? (
+                        <span className="detail-true">Đúng</span>
+                      ) : (
+                        <span className="detail-false">Sai</span>
+                      )}
+                    </span>
                   )}
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="assignment__quiz--answers">
+                  {(question.answers || []).map((item, index) => (
+                    <div
+                      className={`assignment__quiz--list ${getAnswerClass(
+                        question._id,
+                        item
+                      )} ${
+                        (showResult || submittedQuestionOrder.length > 0) &&
+                        !detailAnswer
+                          ? "disabled"
+                          : ""
+                      }`}
+                      key={index}
+                      onClick={() =>
+                        !detailAnswer &&
+                        !showResult &&
+                        submittedQuestionOrder.length === 0 &&
+                        handleAnswers(question._id, item)
+                      }
+                    >
+                      <span>{ans(index)}</span>
+                      <span>{item}</span>
+                      {detailAnswer && item === question.correct_answer && (
+                        <span className="correct-answer-icon">✓</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <MatchingGame />
+          )}
         </Col>
       </Row>
 

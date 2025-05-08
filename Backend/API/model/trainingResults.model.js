@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const trainingResultsSchema = new mongoose.Schema({
   account_id : String ,
   // danh sách câu hỏi .
-  answers : {
-    type : Array ,
-    default : [] ,
-  } ,
+  answers : [
+    {
+      quizId : String ,
+      answer : String ,
+    }
+  ] ,
   score: Number,
   time: {
     type: Date,

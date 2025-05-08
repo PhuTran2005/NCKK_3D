@@ -31,6 +31,7 @@ import {
   FileTextOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import "./Colection.scss";
 import { getAssignment } from "../../Service/AsigmentService";
@@ -59,34 +60,44 @@ export default function Colection() {
 
       const processedData = userResults
         .map((item, index) => {
-          let totalQuestions = 0;
-          let correctAnswers = 0;
+          // Tạo một bản đồ các câu hỏi từ dữ liệu quizzes
+          const quizMap = {};
+          quizzes.forEach((quiz) => {
+            quizMap[quiz._id] = quiz;
+          });
 
-          const answersWithDetails = item.answers.map((answer) => {
-            const quiz = quizzes.find((q) => q._id === answer.quizId);
+          // Xử lý chi tiết cho mỗi câu trả lời
+          const answersWithDetails = item.answers.map((answer, answerIndex) => {
+            const quiz = quizMap[answer.quizId];
             const isCorrect = quiz && quiz.correct_answer === answer.answer;
-
-            if (quiz) {
-              totalQuestions++;
-              if (isCorrect) {
-                correctAnswers++;
-              }
-            }
 
             return {
               ...answer,
               isCorrect: isCorrect,
               correct_answer: quiz ? quiz.correct_answer : "N/A",
               question: quiz ? quiz.question : "N/A",
+              answers: quiz ? quiz.answers : [],
+              originalIndex: answerIndex, // Lưu vị trí ban đầu
             };
           });
+
+          // Tính số câu đúng và tổng số câu
+          let totalQuestions = answersWithDetails.length;
+          let correctAnswers = answersWithDetails.filter(
+            (ans) => ans.isCorrect
+          ).length;
+
+          const timestamp = new Date(item.time || Date.now());
 
           return {
             key: index,
             id: item._id || index,
             examName: `Bài kiểm tra ${index + 1}`,
-            date: new Date(item.time || Date.now()).toLocaleDateString("vi-VN"),
-            timestamp: new Date(item.time || Date.now()),
+            date: timestamp.toLocaleDateString("vi-VN"),
+            timestamp: timestamp,
+            fullTimestamp: `${timestamp.toLocaleDateString(
+              "vi-VN"
+            )} ${timestamp.toLocaleTimeString("vi-VN")}`,
             score: item.score,
             totalQuestions: totalQuestions,
             correctAnswers: correctAnswers,
@@ -122,6 +133,22 @@ export default function Colection() {
 
   const getAnswerStatusColor = (isCorrect) => {
     return isCorrect ? "success" : "error";
+  };
+
+  // Hàm biểu thị đáp án của người dùng dưới dạng A, B, C, D
+  const getLetterFromAnswer = (answer, answers) => {
+    if (!answer || !answers || answers.length === 0) return "Không trả lời";
+    const index = answers.findIndex((ans) => ans === answer);
+    if (index === -1) return answer; // Trả về giá trị gốc nếu không tìm thấy
+    return ["A", "B", "C", "D"][index];
+  };
+
+  // Tương tự cho đáp án đúng
+  const getLetterFromCorrectAnswer = (correctAnswer, answers) => {
+    if (!correctAnswer || !answers || answers.length === 0) return "N/A";
+    const index = answers.findIndex((ans) => ans === correctAnswer);
+    if (index === -1) return correctAnswer;
+    return ["A", "B", "C", "D"][index];
   };
 
   const columns = [
@@ -177,10 +204,23 @@ export default function Colection() {
     return historyData
       .slice(0, 10)
       .map((item) => ({
-        name: item.date,
+        name: item.fullTimestamp, // Using full timestamp instead of just date
         score: item.score,
       }))
       .reverse();
+  };
+
+  // Custom tooltip formatter for the chart
+  const customTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="tooltip-time">{`Thời gian: ${label}`}</p>
+          <p className="tooltip-score">{`Điểm số: ${payload[0].value}`}</p>
+        </div>
+      );
+    }
+    return null;
   };
 
   const calculateStats = () => {
@@ -256,9 +296,16 @@ export default function Colection() {
                       margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
+                      <XAxis
+                        dataKey="name"
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        interval={0}
+                        tick={{ fontSize: 12 }}
+                      />
                       <YAxis domain={[0, 10]} />
-                      <Tooltip />
+                      <Tooltip content={customTooltip} />
                       <Legend />
                       <Line
                         type="monotone"
@@ -379,46 +426,104 @@ export default function Colection() {
             {selectedAttempt.answers?.length > 0 ? (
               <div className="answer-details">
                 <h3>Chi tiết câu trả lời</h3>
-                {selectedAttempt.answers.map((answer, index) => (
-                  <div key={index} className="answer-item">
-                    <div className="question-number">Câu {index + 1}</div>
-                    <div className="answer-content">
-                      <div className="question-text">
-                        {answer.question !== "N/A"
-                          ? answer.question
-                          : "Không có thông tin câu hỏi"}
+                {selectedAttempt.answers
+                  // Sắp xếp câu hỏi theo thứ tự gốc
+                  .sort((a, b) => a.originalIndex - b.originalIndex)
+                  .map((answer, index) => (
+                    <div key={index} className="answer-item">
+                      <div className="question-number">Câu {index + 1}</div>
+                      <div className="answer-content">
+                        <div className="question-text">
+                          {answer.question !== "N/A"
+                            ? answer.question
+                            : "Không có thông tin câu hỏi"}
+                        </div>
+
+                        <div className="answer-options">
+                          {answer.answers && answer.answers.length > 0 && (
+                            <div className="options-grid">
+                              {answer.answers.map((option, optIndex) => (
+                                <div
+                                  key={optIndex}
+                                  className={`answer-option ${
+                                    answer.answer === option
+                                      ? answer.isCorrect
+                                        ? "selected-correct"
+                                        : "selected-incorrect"
+                                      : option === answer.correct_answer
+                                      ? "correct-answer"
+                                      : ""
+                                  }`}
+                                >
+                                  <span className="option-letter">
+                                    {["A", "B", "C", "D"][optIndex]}
+                                  </span>
+                                  <span className="option-text">{option}</span>
+                                  {option === answer.correct_answer && (
+                                    <CheckCircleOutlined className="correct-icon" />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="answer-result">
+                          {answer.answer ? (
+                            <>
+                              <div>
+                                Câu trả lời:{" "}
+                                <strong>
+                                  {getLetterFromAnswer(
+                                    answer.answer,
+                                    answer.answers
+                                  )}{" "}
+                                  ({answer.answer})
+                                </strong>
+                              </div>
+                              <div>
+                                Đáp án đúng:{" "}
+                                <strong>
+                                  {getLetterFromCorrectAnswer(
+                                    answer.correct_answer,
+                                    answer.answers
+                                  )}{" "}
+                                  ({answer.correct_answer})
+                                </strong>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="not-answered">
+                              <QuestionCircleOutlined /> Chưa trả lời - Đáp án
+                              đúng:{" "}
+                              <strong>
+                                {getLetterFromCorrectAnswer(
+                                  answer.correct_answer,
+                                  answer.answers
+                                )}{" "}
+                                ({answer.correct_answer})
+                              </strong>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      {answer.answer ? (
-                        <>
-                          <div>
-                            Câu trả lời: <strong>{answer.answer}</strong>
-                          </div>
-                          <div>
-                            Đáp án đúng:{" "}
-                            <strong>{answer.correct_answer}</strong>
-                          </div>
-                        </>
-                      ) : (
-                        <div>Chưa trả lời</div>
-                      )}
-                    </div>
-                    <div className="answer-status">
-                      {answer.answer ? (
-                        answer.isCorrect ? (
-                          <Tag color="success" icon={<CheckCircleOutlined />}>
-                            Đúng
-                          </Tag>
+                      <div className="answer-status">
+                        {answer.answer ? (
+                          answer.isCorrect ? (
+                            <Tag color="success" icon={<CheckCircleOutlined />}>
+                              Đúng
+                            </Tag>
+                          ) : (
+                            <Tag color="error" icon={<CloseCircleOutlined />}>
+                              Sai
+                            </Tag>
+                          )
                         ) : (
-                          <Tag color="error" icon={<CloseCircleOutlined />}>
-                            Sai
-                          </Tag>
-                        )
-                      ) : (
-                        <Tag color="default">Chưa trả lời</Tag>
-                      )}
+                          <Tag color="default">Chưa trả lời</Tag>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             ) : (
               <Empty description="Không có dữ liệu chi tiết câu trả lời" />

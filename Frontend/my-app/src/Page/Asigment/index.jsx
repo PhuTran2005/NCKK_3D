@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import "./Asigment.scss";
 import { getAssignment } from "../../Service/AsigmentService";
-import { Col, Row, Modal, Select, message, Button } from "antd";
+import { Col, Row, Modal, Select, message, Button, Switch } from "antd";
 import { getCookie } from "../../helper/cookies";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 import { postTrainingResult } from "../../Service/trainingResults";
 
 export default function Assigment() {
+  const [originalQuestionList, setOriginalQuestionList] = useState([]);
   const [dataQuestionList, setDataQuestionList] = useState([]);
   const [question, setQuestion] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -17,6 +18,8 @@ export default function Assigment() {
   const [detailAnswer, setDetailAnswer] = useState(false);
   const [answerDetail, setAnswerDetail] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shuffleQuestions, setShuffleQuestions] = useState(false);
+  const [submittedQuestionOrder, setSubmittedQuestionOrder] = useState([]);
   const [examList] = useState([
     { id: 1, name: "Đề số 1" },
     { id: 2, name: "Đề số 2" },
@@ -27,8 +30,37 @@ export default function Assigment() {
   const handleExamChange = (value) => {
     setCurrentExam(value);
     setSelectedAnswers({});
-    setQuestion({});
+    resetQuestions();
     setShowResult(false);
+    setDetailAnswer(false);
+    setSubmittedQuestionOrder([]);
+  };
+
+  const handleShuffleChange = (checked) => {
+    setShuffleQuestions(checked);
+    resetQuestions(checked);
+  };
+
+  // Hàm để trộn ngẫu nhiên mảng
+  const shuffleArray = (array) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // Hàm đặt lại câu hỏi, có thể trộn nếu cần
+  const resetQuestions = (shouldShuffle = shuffleQuestions) => {
+    if (shouldShuffle && originalQuestionList.length > 0) {
+      const shuffled = shuffleArray(originalQuestionList);
+      setDataQuestionList(shuffled);
+      setQuestion(shuffled[0]);
+    } else if (originalQuestionList.length > 0) {
+      setDataQuestionList([...originalQuestionList]);
+      setQuestion(originalQuestionList[0]);
+    }
   };
 
   const handleClick = (e) => {
@@ -40,7 +72,8 @@ export default function Assigment() {
       try {
         const res = await getAssignment();
         console.log(res);
-        setDataQuestionList(res);
+        setOriginalQuestionList(res);
+        setDataQuestionList(shuffleQuestions ? shuffleArray(res) : res);
         if (res.length > 0) {
           setQuestion(res[0]);
         }
@@ -76,7 +109,8 @@ export default function Assigment() {
   const handleReset = () => {
     setDetailAnswer(false);
     setSelectedAnswers({});
-    setQuestion(dataQuestionList[0]);
+    setSubmittedQuestionOrder([]);
+    resetQuestions();
   };
 
   const handleDetail = () => {
@@ -84,9 +118,23 @@ export default function Assigment() {
     setDetailAnswer(true);
   };
 
+  const handleCloseResultModal = () => {
+    setShowResult(false);
+    // When closing the result modal without viewing details,
+    // restore the question order from submission time
+    if (submittedQuestionOrder.length > 0) {
+      setDataQuestionList([...submittedQuestionOrder]);
+      setQuestion(submittedQuestionOrder[0]);
+    }
+  };
+
   const submitQuiz = async (option) => {
+    console.log(option);
     try {
       setIsSubmitting(true);
+      // Save the current question order at submission time
+      setSubmittedQuestionOrder([...dataQuestionList]);
+
       const result = await postTrainingResult(option);
       console.log(result);
 
@@ -94,10 +142,11 @@ export default function Assigment() {
       setScore(finalScore);
       setShowResult(true);
 
-      // Reset submission state after successful submission
       setIsSubmitting(false);
 
-      // Return success to indicate the quiz was submitted
+      // We no longer reset here to preserve the question order
+      // handleReset() is only called when explicitly requested
+
       return true;
     } catch (error) {
       console.error("Failed to submit quiz:", error);
@@ -108,7 +157,6 @@ export default function Assigment() {
   };
 
   const handleSubmit = async () => {
-    // Prevent multiple submissions
     if (isSubmitting) {
       return;
     }
@@ -128,6 +176,7 @@ export default function Assigment() {
       score: calculateScore(),
     };
 
+    console.log(option);
     setAnswerDetail(option.answers);
     const quantityNoAns =
       dataQuestionList.length - Object.keys(selectedAnswers).length;
@@ -174,7 +223,6 @@ export default function Assigment() {
       return selectedAnswers[questionId] === answer ? "selected" : "";
     }
 
-    // In detail view
     const question = dataQuestionList.find((q) => q._id === questionId);
     if (!question) return "";
 
@@ -184,6 +232,16 @@ export default function Assigment() {
       return "incorrect";
     }
     return "";
+  };
+
+  const handleShuffleQuestions = () => {
+    if (originalQuestionList.length > 0) {
+      const shuffled = shuffleArray(originalQuestionList);
+      setDataQuestionList(shuffled);
+      setQuestion(shuffled[0]);
+      setSelectedAnswers({});
+      setSubmittedQuestionOrder([]);
+    }
   };
 
   return (
@@ -197,6 +255,7 @@ export default function Assigment() {
               placeholder="Chọn đề thi"
               onChange={handleExamChange}
               value={currentExam}
+              disabled={detailAnswer || showResult}
             >
               {examList.map((exam) => (
                 <Select.Option key={exam.id} value={exam.id}>
@@ -204,6 +263,33 @@ export default function Assigment() {
                 </Select.Option>
               ))}
             </Select>
+
+            <div className="assignment__option--shuffle">
+              <span>Trộn câu hỏi:</span>
+              <Switch
+                checked={shuffleQuestions}
+                onChange={handleShuffleChange}
+                disabled={
+                  detailAnswer ||
+                  showResult ||
+                  submittedQuestionOrder.length > 0
+                }
+              />
+            </div>
+
+            {shuffleQuestions &&
+              !detailAnswer &&
+              !showResult &&
+              submittedQuestionOrder.length === 0 && (
+                <Button
+                  type="primary"
+                  onClick={handleShuffleQuestions}
+                  style={{ width: "100%", marginBottom: "20px" }}
+                >
+                  Trộn lại câu hỏi
+                </Button>
+              )}
+
             <h4>Câu hỏi: </h4>
             <div className="assignment__option--quiz">
               {dataQuestionList.map((item, index) => (
@@ -221,6 +307,13 @@ export default function Assigment() {
                         ? "answered"
                         : ""
                     }
+                    ${
+                      showResult ||
+                      detailAnswer ||
+                      submittedQuestionOrder.length > 0
+                        ? "submitted"
+                        : ""
+                    }
                   `}
                 >
                   {index + 1}
@@ -232,6 +325,15 @@ export default function Assigment() {
             {detailAnswer ? (
               <div onClick={handleReset} className="assignment__reset">
                 Làm lại
+              </div>
+            ) : submittedQuestionOrder.length > 0 ? (
+              <div className="assignment__btn-group">
+                <div onClick={handleDetail} className="assignment__detail-btn">
+                  Xem chi tiết
+                </div>
+                <div onClick={handleReset} className="assignment__reset">
+                  Làm lại
+                </div>
               </div>
             ) : (
               <div
@@ -256,6 +358,10 @@ export default function Assigment() {
               Câu hỏi {dataQuestionList.indexOf(question) + 1}/
               {dataQuestionList.length}
             </h4>
+            {(showResult || submittedQuestionOrder.length > 0) &&
+              !detailAnswer && (
+                <div className="assignment__quiz--submitted-tag">Đã nộp</div>
+              )}
           </div>
           <div className="assignment__quiz--content">
             <div className="assignment__quiz--question">
@@ -276,10 +382,18 @@ export default function Assigment() {
                   className={`assignment__quiz--list ${getAnswerClass(
                     question._id,
                     item
-                  )}`}
+                  )} ${
+                    (showResult || submittedQuestionOrder.length > 0) &&
+                    !detailAnswer
+                      ? "disabled"
+                      : ""
+                  }`}
                   key={index}
                   onClick={() =>
-                    !detailAnswer && handleAnswers(question._id, item)
+                    !detailAnswer &&
+                    !showResult &&
+                    submittedQuestionOrder.length === 0 &&
+                    handleAnswers(question._id, item)
                   }
                 >
                   <span>{ans(index)}</span>
@@ -297,7 +411,7 @@ export default function Assigment() {
       <Modal
         title="Kết quả bài thi"
         open={showResult}
-        onCancel={() => setShowResult(false)}
+        onCancel={handleCloseResultModal}
         footer={null}
         className="result-modal"
       >

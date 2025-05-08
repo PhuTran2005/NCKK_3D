@@ -92,7 +92,7 @@ export default function Home() {
         </div>
         <Row>
           <Col span={8} xs={24} sm={8} style={{ textTransform: "uppercase" }}>
-            <h1 style={{ fontSize: "35px" }}>Tính năng chính</h1>
+            <h1 style={{ fontSize: "35px", color: "#fff" }}>Tính năng chính</h1>
           </Col>
           <Col className="homepage__func" span={16} xs={24} sm={16}>
             <div>

@@ -1,10 +1,12 @@
 const Account = require("../../../model/account.model");
 const md5 = require('md5') ;
 module.exports.login = async (req, res) => {
-  const account = await Account.findOne({ loginName: req.body.loginName });
-  
-  if (account.password == md5(req.body.password)) {
-    const account = await Account.findOne({loginName : req.body.loginName , delete : false}) ;
+  const account = await Account.findOne({ loginName: req.body.loginName , delete : false });
+  if (!account) {
+    res.json({code : 400 , message : "Account is not exits" });
+    return ;
+  }
+  if (account.password === md5(req.body.password)) {
     res.cookie("account_id" , account._id) ;
     res.json({code : 200 , message: "Login Success", token: account.token , account_id : account._id });
     // res.locals.loginName = req.body.loginName ;
@@ -18,6 +20,7 @@ module.exports.signup = async (req, res) => {
     const checkAccount = await Account.findOne({loginName : req.body.loginName , delete : false}) ;
     if (checkAccount) {
       res.json({code : 400 , message : "Account Already Exist" });
+      return;
     }
     const account = new Account({
       loginName: req.body.loginName,

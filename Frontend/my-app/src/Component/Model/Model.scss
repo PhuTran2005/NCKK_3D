@@ -187,6 +187,51 @@ img {
   --danger: #ff4d4f;
   --danger-light: #fff1f0;
 }
+.model__detail {
+  height: 200px;
+  background: transparent;
+  padding: 10px;
+  border-radius: 16px;
+  color: #fff;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  margin-top: 20px;
+  -webkit-scrollbar {
+    width: 5px;
+  }
+  -webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 10px;
+  }
+}
+
+.model__detail h2 {
+  font-size: 32px;
+  margin-bottom: 16px;
+  color: #5271ff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px #00ffff, 0 0 16px rgba(0, 255, 255, 0.6);
+  animation: glowText 2s ease-in-out infinite alternate;
+}
+
+.model__detail p {
+  font-size: 18px;
+  color: #092124;
+  line-height: 1.6;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
+  max-width: 800px;
+}
+
+/* Optional animation */
+@keyframes glowText {
+  from {
+    text-shadow: 0 0 6px #00ffff, 0 0 10px #00ffff;
+  }
+  to {
+    text-shadow: 0 0 12px #00ffff, 0 0 24px rgba(0, 255, 255, 0.8);
+  }
+}
 
 .model {
   display: flex;
@@ -318,6 +363,9 @@ img {
     &__main {
       // height: ;
     }
+    .model__detail {
+      height: auto;
+    }
   }
 }
 
@@ -391,6 +439,7 @@ img {
   margin: 32px auto 18px auto;
   max-width: 540px;
   min-height: 400px;
+  padding: 0 15px;
 }
 .matching-card {
   width: 110px;
@@ -405,11 +454,23 @@ img {
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  transition: border 0.2s, box-shadow 0.2s, opacity 0.3s, transform 0.2s,
-    background 0.2s;
+  transition: all 0.3s ease;
   user-select: none;
   position: relative;
   overflow: hidden;
+  padding: 8px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  span {
+    text-align: center;
+    line-height: 1.2;
+  }
 }
 .matching-card:hover:not(.matched):not(.selected):not(.wrong) {
   box-shadow: 0 6px 18px #1db8e733;
@@ -451,13 +512,55 @@ img {
 @media (max-width: 700px) {
   .matching-grid {
     grid-template-columns: repeat(2, 1fr);
-    max-width: 320px;
-    gap: 12px;
+    max-width: 100%;
+    gap: 15px;
+    margin: 20px auto;
+    min-height: auto;
+    padding: 0 10px;
   }
+
   .matching-card {
-    width: 90px;
-    height: 90px;
-    font-size: 15px;
+    width: 100%;
+    height: 120px;
+    font-size: 14px;
+    border-width: 2px;
+    padding: 6px;
+
+    img {
+      max-height: 80px;
+      width: auto;
+    }
+
+    span {
+      font-size: 13px;
+      padding: 0 4px;
+    }
+  }
+
+  .matching-restart-btn {
+    margin-top: 15px;
+    padding: 8px 24px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .matching-grid {
+    gap: 10px;
+    padding: 0 5px;
+  }
+
+  .matching-card {
+    height: 100px;
+    font-size: 12px;
+
+    img {
+      max-height: 60px;
+    }
+
+    span {
+      font-size: 12px;
+    }
   }
 }
 .assignment__quiz {

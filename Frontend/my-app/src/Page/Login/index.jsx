@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../Features/Auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../../helper/cookies";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -28,24 +30,32 @@ const Login = () => {
       );
 
       const data = await response.json();
-
       console.log(data);
-      setCookie("token", data.token);
-      setCookie("id", data.account_id);
 
-      dispatch(loginSuccess(values));
-      notification.success({
-        message: "Thành công",
-        description: "Bạn đã đăng nhập thành công!",
-        duration: 2, // thời gian hiện thông báo (giây)
-      });
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      if (data.code == 200) {
+        setCookie("token", data.token);
+        setCookie("id", data.account_id);
+        dispatch(loginSuccess(values));
+        Swal.fire({
+          position: "center-center",
+          icon: "success",
+          title: data.message,
+          showConfirmButton: false,
+          timer: 1500
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else {
+        notification.error({
+          message: data.message,
+          description: data.message,
+        });
+      }
     } catch (error) {
       notification.error({
         message: error,
-        description: "Tên đăng nhập hoặc mật khẩu không đúng!",
+        description: error,
       });
     }
     setLoading(false);

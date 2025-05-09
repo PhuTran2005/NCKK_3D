@@ -7,6 +7,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 import { postTrainingResult } from "../../Service/trainingResults";
 import MatchingGame from "../../Component/Model/MatchingGame";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 export default function Assigment() {
   const [originalQuestionList, setOriginalQuestionList] = useState([]);
@@ -241,6 +242,20 @@ export default function Assigment() {
     }
   };
 
+  const handleNextQuestion = () => {
+    const currentIndex = dataQuestionList.indexOf(question);
+    if (currentIndex < dataQuestionList.length - 1) {
+      setQuestion(dataQuestionList[currentIndex + 1]);
+    }
+  };
+
+  const handlePreviousQuestion = () => {
+    const currentIndex = dataQuestionList.indexOf(question);
+    if (currentIndex > 0) {
+      setQuestion(dataQuestionList[currentIndex - 1]);
+    }
+  };
+
   return (
     <>
       <Row className="assignment">
@@ -262,34 +277,39 @@ export default function Assigment() {
                 Ghép hình
               </Button>
             </div>
-            <Select
-              style={{ width: "100%", marginBottom: "20px" }}
-              placeholder="Chọn đề thi"
-              onChange={handleExamChange}
-              value={currentExam}
-              disabled={detailAnswer || showResult}
-            >
-              {examList.map((exam) => (
-                <Select.Option key={exam.id} value={exam.id}>
-                  {exam.name}
-                </Select.Option>
-              ))}
-            </Select>
+            {assignmentMode === "quiz" && (
+              <Select
+                style={{ width: "100%", marginBottom: "20px" }}
+                placeholder="Chọn đề thi"
+                onChange={handleExamChange}
+                value={currentExam}
+                disabled={detailAnswer || showResult}
+              >
+                {examList.map((exam) => (
+                  <Select.Option key={exam.id} value={exam.id}>
+                    {exam.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
 
-            <div className="assignment__option--shuffle">
-              <span>Trộn câu hỏi:</span>
-              <Switch
-                checked={shuffleQuestions}
-                onChange={handleShuffleChange}
-                disabled={
-                  detailAnswer ||
-                  showResult ||
-                  submittedQuestionOrder.length > 0
-                }
-              />
-            </div>
+            {assignmentMode === "quiz" && (
+              <div className="assignment__option--shuffle">
+                <span>Trộn câu hỏi:</span>
+                <Switch
+                  checked={shuffleQuestions}
+                  onChange={handleShuffleChange}
+                  disabled={
+                    detailAnswer ||
+                    showResult ||
+                    submittedQuestionOrder.length > 0
+                  }
+                />
+              </div>
+            )}
 
-            {shuffleQuestions &&
+            {assignmentMode === "quiz" &&
+              shuffleQuestions &&
               !detailAnswer &&
               !showResult &&
               submittedQuestionOrder.length === 0 && (
@@ -301,14 +321,16 @@ export default function Assigment() {
                   Trộn lại câu hỏi
                 </Button>
               )}
-
-            <h4>Câu hỏi: </h4>
-            <div className="assignment__option--quiz">
-              {dataQuestionList.map((item, index) => (
-                <span
-                  key={index}
-                  onClick={() => handleClick(item)}
-                  className={`
+            {assignmentMode === "quiz" && (
+              <>
+                {" "}
+                <h4>Câu hỏi: </h4>
+                <div className="assignment__option--quiz">
+                  {dataQuestionList.map((item, index) => (
+                    <span
+                      key={index}
+                      onClick={() => handleClick(item)}
+                      className={`
                     ${question._id === item._id ? "active" : ""}
                     ${
                       detailAnswer
@@ -327,41 +349,48 @@ export default function Assigment() {
                         : ""
                     }
                   `}
-                >
-                  {index + 1}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="assignment__btn">
-            {detailAnswer ? (
-              <div onClick={handleReset} className="assignment__reset">
-                Làm lại
-              </div>
-            ) : submittedQuestionOrder.length > 0 ? (
-              <div className="assignment__btn-group">
-                <div onClick={handleDetail} className="assignment__detail-btn">
-                  Xem chi tiết
+                    >
+                      {index + 1}
+                    </span>
+                  ))}
                 </div>
+              </>
+            )}
+          </div>
+          {assignmentMode === "quiz" && (
+            <div className="assignment__btn">
+              {detailAnswer ? (
                 <div onClick={handleReset} className="assignment__reset">
                   Làm lại
                 </div>
-              </div>
-            ) : (
-              <div
-                onClick={handleSubmit}
-                className={`assignment__submit ${
-                  isSubmitting ? "submitting" : ""
-                }`}
-                style={{
-                  opacity: isSubmitting ? 0.7 : 1,
-                  cursor: isSubmitting ? "not-allowed" : "pointer",
-                }}
-              >
-                {isSubmitting ? "Đang nộp..." : "Nộp bài"}
-              </div>
-            )}
-          </div>
+              ) : submittedQuestionOrder.length > 0 ? (
+                <div className="assignment__btn-group">
+                  <div
+                    onClick={handleDetail}
+                    className="assignment__detail-btn"
+                  >
+                    Xem chi tiết
+                  </div>
+                  <div onClick={handleReset} className="assignment__reset">
+                    Làm lại
+                  </div>
+                </div>
+              ) : (
+                <div
+                  onClick={handleSubmit}
+                  className={`assignment__submit ${
+                    isSubmitting ? "submitting" : ""
+                  }`}
+                  style={{
+                    opacity: isSubmitting ? 0.7 : 1,
+                    cursor: isSubmitting ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {isSubmitting ? "Đang nộp..." : "Nộp bài"}
+                </div>
+              )}
+            </div>
+          )}
         </Col>
 
         <Col className="assignment__quiz" span={18} xs={24} lg={18}>
@@ -419,6 +448,33 @@ export default function Assigment() {
                       )}
                     </div>
                   ))}
+                </div>
+                <div className="assignment__quiz--navigation">
+                  <button
+                    onClick={handlePreviousQuestion}
+                    disabled={
+                      dataQuestionList.indexOf(question) === 0 ||
+                      detailAnswer ||
+                      showResult ||
+                      submittedQuestionOrder.length > 0
+                    }
+                  >
+                    <LeftOutlined />
+                    Câu trước
+                  </button>
+                  <button
+                    onClick={handleNextQuestion}
+                    disabled={
+                      dataQuestionList.indexOf(question) ===
+                        dataQuestionList.length - 1 ||
+                      detailAnswer ||
+                      showResult ||
+                      submittedQuestionOrder.length > 0
+                    }
+                  >
+                    Câu sau
+                    <RightOutlined />
+                  </button>
                 </div>
               </div>
             </>

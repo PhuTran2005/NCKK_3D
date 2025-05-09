@@ -4,6 +4,7 @@
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+  padding: 10px;
 
   &::before {
     content: "";
@@ -145,7 +146,7 @@
 
     &__avatar {
       flex: 0 0 calc(25% - 30px);
-      max-width: 200px;
+      max-width: 250px;
       text-align: center;
       background: #ffffff;
       padding: 20px;
@@ -253,6 +254,10 @@
   }
 
   @media (max-width: 480px) {
+    .homepage__infor__avatar {
+      flex: 1;
+    }
+
     &__title h3 {
       font-size: 28px;
     }

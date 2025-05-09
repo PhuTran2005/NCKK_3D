@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   currModel: {
     _id: "6800ca54fc51db9c8bb86201",
-    name: "Floppy_disk",
+    name: "Hộp CPU",
     linkFile:
-      "https://ucarecdn.com/1c1982d1-6ac5-4c75-912b-2ee9d1e4ad2e/floppy_disk.glb",
+      "https://firebasestorage.googleapis.com/v0/b/chay-tam-an.appspot.com/o/CPU_usdz.glb?alt=media&token=81fbe14c-d0bf-4c9b-a896-80804b80d244",
     thumbnail:
       "https://tse2.mm.bing.net/th?id=OIP.uOuHLI0974DCEMUEaXTa6QHaH6&pid=Api&P=0&h=180",
     description: "AA",

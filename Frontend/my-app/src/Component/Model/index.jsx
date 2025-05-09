@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import "@google/model-viewer";
 import "./Model.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React from "react";
+import { changeModel } from "../../Features/Model/ModelSlice";
 ///commmentcommment
-const ModelViewerComponent = () => {
+const ModelViewerComponent = (prop) => {
+  const { modelList } = prop;
   const { currModel } = useSelector((state) => state.model);
+  const dispatch = useDispatch();
   const [tooltipData, setTooltipData] = useState({
     img: "",
     text: "",
@@ -14,18 +17,24 @@ const ModelViewerComponent = () => {
     y: 0,
   });
   const modelViewerRef = useRef(null);
-  const handleModelChange = () => {
-    console.log("oce");
+  const handleModelChange = (e) => {
+    if (e) {
+      const alterModel = modelList.find((item) => {
+        return item._id === e;
+      });
+      if (alterModel) {
+        dispatch(changeModel(alterModel));
+      }
+    }
   };
   const handleHotspotClick = (event) => {
     console.log(event.target);
     event.stopPropagation();
-    console.log("yep");
     const target = event.target;
 
     const img = target.getAttribute("data-img");
     const text = target.getAttribute("data-info");
-
+    const modelId = target.getAttribute("modelId");
     // Lấy bounding box của hotspot và container
     const rect = target.getBoundingClientRect();
     const containerRect = modelViewerRef.current.getBoundingClientRect();
@@ -51,6 +60,7 @@ const ModelViewerComponent = () => {
       visible: true,
       x,
       y,
+      modelId,
     });
   };
 
@@ -93,6 +103,8 @@ const ModelViewerComponent = () => {
         button.dataset.info = hotspot.info;
         button.innerText = hotspot.info;
         button.setAttribute("data-img", hotspot.img);
+        button.setAttribute("modelId", hotspot.modelId);
+        button.setAttribute("data-img", hotspot.img);
         button.setAttribute(
           "data-position",
           `${hotspot.x} ${hotspot.y} ${hotspot.z}`
@@ -129,7 +141,7 @@ const ModelViewerComponent = () => {
             top: `${tooltipData.y}px`,
             animation: "fadeBounce 0.4s ease-out forwards",
           }}
-          onClick={handleModelChange}
+          onClick={() => handleModelChange(tooltipData.modelId)}
         >
           <img id="tooltip-img" src={tooltipData.img} alt="Hotspot Image" />
           <p id="tooltip-text">{tooltipData.text}</p>
